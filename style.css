@@ -123,7 +123,7 @@ html {
     display: flex;
     max-width: 1400px;
     margin: 0 auto;
-    height: calc(100vh - 120px);
+    min-height: calc(100vh - 120px);
     gap: 20px;
     padding: 20px;
     flex-direction: row-reverse;
@@ -435,8 +435,8 @@ html {
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    height: 100%;
-    min-height: 0;
+    height: calc(100vh - 160px);
+    min-height: 500px;
 }
 
 /* Map Section */
@@ -1085,7 +1085,7 @@ html {
     }
     
     .map-container {
-        min-height: 450px;
+        min-height: calc(100vh - 350px);
     }
     
     /* Mobile sidebar improvements */
@@ -1319,7 +1319,7 @@ html {
     }
     
     .map-container {
-        min-height: 350px;
+        min-height: calc(100vh - 380px);
     }
     
     /* Neighboring country labels */

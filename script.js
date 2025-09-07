@@ -923,27 +923,24 @@ d3.select("#modal-zoom-to").on("click", function() {
         const scale = 4; // Zoom level
         const translate = [currentWidth / 2 - scale * x, currentHeight / 2 - scale * y];
         
-        // Scroll to top on desktop to ensure map is visible (instant scroll to avoid interference with zoom)
-        if (window.innerWidth > 768) {
-            window.scrollTo({ top: 0, behavior: 'instant' });
-        }
+        // Scroll to top to ensure map is visible
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         
-        // Close mobile menu and scroll to top on mobile devices
+        // Close mobile menu on mobile devices
         if (window.innerWidth <= 768) {
             const sidebar = document.querySelector('.sidebar');
             if (sidebar) {
                 sidebar.classList.add('collapsed');
             }
-            window.scrollTo({ top: 0, behavior: 'instant' });
         }
         
-        // Apply the zoom transform with a slight delay to ensure scroll completes
+        // Apply the zoom transform with a delay to ensure scroll completes
         setTimeout(() => {
             svg.transition().duration(1000).call(
                 zoomBehavior.transform,
                 d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale)
             );
-        }, 50);
+        }, 500);
         
         // Close modal after zooming
         closeMunicipalityModal();
