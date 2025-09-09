@@ -50,7 +50,7 @@ html {
     margin: 0 auto;
     padding: 0 20px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     position: relative;
     z-index: 1;
@@ -71,9 +71,14 @@ html {
 
 
 
-.header-stats {
+/* Below Map Stats Section */
+.below-map-stats {
     display: flex;
+    justify-content: center;
     gap: 20px;
+    margin-top: 20px;
+    padding: 0;
+    width: 100%;
 }
 
 .stat-card {
@@ -294,7 +299,7 @@ html {
 
 #search-button {
     padding: 12px 16px;
-    background: linear-gradient(135deg, #655443, #8c7e71);
+    background: linear-gradient(135deg, #000000, #333333);
     color: white;
     border: none;
     border-radius: 10px;
@@ -305,7 +310,7 @@ html {
 }
 
 #search-button:hover {
-    background: linear-gradient(135deg, #4b5563, #374151);
+    background: linear-gradient(135deg, #000000, #333333);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(55, 65, 81, 0.3);
 }
@@ -367,7 +372,7 @@ html {
 }
 
 .region.active {
-    background: linear-gradient(135deg, #655443, #8c7e71);
+    background: linear-gradient(135deg, #000000, #333333);
     color: white;
     box-shadow: 0 4px 12px rgba(101, 84, 67, 0.3);
 }
@@ -434,25 +439,24 @@ html {
     background: white;
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    height: calc(100vh - 160px);
+    overflow: visible;
     min-height: 500px;
 }
 
 /* Map Section */
 .map-section {
-    height: 100%;
     display: flex;
     flex-direction: column;
-    min-height: 0;
+    height: 85vh;
+    max-height: 700px;
 }
 
 .map-header {
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
     padding: 20px 24px;
     border-bottom: 1px solid #e2e8f0;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
 }
 
@@ -476,7 +480,6 @@ html {
     display: flex;
     gap: 16px;
     align-items: center;
-    flex-direction: row-reverse;
 }
 
 .filter-buttons {
@@ -507,8 +510,8 @@ html {
 }
 
 .btn-filter.active {
-    background: linear-gradient(135deg, #655443, #8c7e71);
-    border-color: #655443;
+    background: linear-gradient(135deg, #000000, #333333);
+    border-color: #000000;
     color: white;
     box-shadow: 0 4px 12px rgba(101, 84, 67, 0.3);
 }
@@ -520,7 +523,6 @@ html {
     border-radius: 10px;
     padding: 4px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    flex-direction: row-reverse;
 }
 
 .zoom-controls button {
@@ -556,6 +558,7 @@ html {
     width: 100%;
     height: 100%;
     cursor: grab;
+    background-color: #E2D3C3;
 }
 
 #map:active {
@@ -586,16 +589,17 @@ html {
     opacity: 0.9;
 }
 
-.district-boundary {
-    fill: none;
-    stroke: #94a3b8;
-    stroke-width: 1px;
-    opacity: 0.6;
+path.district-boundary {
+    fill: #E2D3C3 !important;
+    stroke: #64748b !important;
+    stroke-width: 1.5px !important;
+    fill-rule: evenodd;
+    shape-rendering: geometricPrecision;
 }
 
-.district-boundary:hover {
-    stroke: #64748b;
-    stroke-width: 2px;
+path.district-boundary:hover:not(.selected) {
+    stroke: #64748b !important;
+    stroke-width: 1.5px !important;
 }
 
 .region-summary-label {
@@ -851,25 +855,25 @@ html {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #64748b, #475569);
+    background: linear-gradient(135deg, #000000, #333333);
     color: white;
     box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #475569, #334155);
+    background: linear-gradient(135deg, #000000, #333333);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(100, 116, 139, 0.4);
 }
 
 .btn-secondary {
-    background-color: #64748b;
+    background-color: #000000;
     color: white;
     box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
 }
 
 .btn-secondary:hover {
-    background-color: #475569;
+    background-color: #333333;
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(100, 116, 139, 0.4);
 }
@@ -923,10 +927,20 @@ html {
         display: none;
     }
     
+    /* Hide below-map stats on mobile */
+    .below-map-stats {
+        display: none;
+    }
+    
     /* Show mobile stats section */
     .mobile-stats {
         display: block;
         order: 3;
+    }
+    
+    /* Ensure below-map-stats appears before mobile-stats */
+    .below-map-stats {
+        order: 2;
     }
     
     .logo-section {

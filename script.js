@@ -103,8 +103,12 @@ let regions = {
 
 // Calculate map dimensions based on new layout
 const mapContainer = document.querySelector('.map-container');
-const width = mapContainer ? mapContainer.clientWidth : Math.min(window.innerWidth * 0.7, 1000);
-const height = mapContainer ? mapContainer.clientHeight : Math.min(window.innerHeight * 0.8, 700);
+let width = mapContainer ? mapContainer.clientWidth : Math.min(window.innerWidth * 0.7, 1000);
+let height = mapContainer ? mapContainer.clientHeight : Math.min(window.innerHeight * 0.8, 700);
+
+// Initialize global window properties for resize handling
+window.width = width;
+window.height = height;
 
 // Statistics functions
 function updateStatistics() {
@@ -150,7 +154,7 @@ function updateRegionStatistics() {
         
         statsContainer.append("div")
             .style("font-size", "12px")
-            .style("color", "#64748b")
+            .style("color", "#000000")
             .text(`${officialPopulation.toLocaleString()} نسمة`);
     });
 }
@@ -291,14 +295,14 @@ function getPointSize(population) {
 // Function to determine point color based on population (professional gradient)
 function getPointColor(population) {
     // Professional grayish color scheme based on population
-    if (population > 500000) return "#1a202c";     // Dark gray - Major cities
-    if (population > 300000) return "#2d3748";     // Dark gray - Very large cities
-    if (population > 200000) return "#4a5568";     // Medium gray - Large cities
-    if (population > 100000) return "#64748b";     // Gray - Medium cities
-    if (population > 50000) return "#94a3b8";     // Light gray - Small cities
-    if (population > 20000) return "#cbd5e1";     // Lighter gray - Towns
-    if (population > 10000) return "#e2e8f0";     // Very light gray - Small towns
-    return "#f1f5f9";                               // Pale gray - Villages
+    if (population > 500000) return "#000000";     // Black - Major cities
+        if (population > 300000) return "#1a1a1a";     // Very dark gray - Very large cities
+        if (population > 200000) return "#333333";     // Dark gray - Large cities
+        if (population > 100000) return "#4d4d4d";     // Medium gray - Medium cities
+        if (population > 50000) return "#666666";     // Gray - Small cities
+        if (population > 20000) return "#808080";     // Light gray - Towns
+        if (population > 10000) return "#cccccc";     // Very light gray - Small towns
+        return "#f0f0f0";                               // Very pale gray - Villages
 }
 
 // Single color for all points - size indicates population
@@ -373,7 +377,7 @@ function updateMap(data) {
             d3.select(event.currentTarget)
                 .classed("selected", true)
                 .attr("r", (getPointSize(d.population) + 4) * Math.max(0.3, Math.min(2, 1 / currentZoom)))
-                .style("stroke", "#dc2626")
+                .style("stroke", "#000000")
                 .style("stroke-width", () => {
                     const scaleFactor = Math.max(0.3, Math.min(2, 1 / currentZoom));
                     return Math.max(2, 4 * scaleFactor) + "px";
@@ -392,19 +396,27 @@ function updateMap(data) {
 
 function initializeMap(municipalitiesData) {
     d3.json("libya.json").then(world => {
-
         
         // libya.json contains administrative districts, so we'll use all features
-        world.features.forEach((district, index) => {
-
-            
+        // Render in reverse order to prevent the last district from covering others
+        world.features.slice().reverse().forEach((district, reverseIndex) => {
             mapGroup.append("path")
                 .datum(district)
                 .attr("class", "district-boundary")
                 .attr("d", path)
-                .style("fill", "none")
-                .style("stroke", "#333")
-                .style("stroke-width", "1");
+                .style("fill", "#E2D3C3")
+                .style("stroke", "#64748b")
+                .style("stroke-width", "1.5px")
+                .on("mouseover", function(event, d) {
+                    d3.select(this)
+                        .style("stroke", "#000000")
+                        .style("stroke-width", "2px");
+                })
+                .on("mouseout", function(event, d) {
+                    d3.select(this)
+                        .style("stroke", "#64748b")
+                        .style("stroke-width", "1.5px");
+                })
         });
 
         // Add neighboring country labels for geographic context
@@ -429,7 +441,7 @@ function initializeMap(municipalitiesData) {
                     .attr("dominant-baseline", "middle")
                     .style("font-size", "14px")
                     .style("font-weight", "600")
-                    .style("fill", "#64748b")
+                    .style("fill", "#000000")
                     .style("opacity", "0.7")
                     .style("pointer-events", "none")
                     .text(country.name);
@@ -499,7 +511,7 @@ function initializeRegionsList() {
                     // Highlight the selected point
                     const point = points.filter(p => p.name === municipality.name);
                     point.attr("r", (getPointSize(municipality.population) + 4) * Math.max(0.3, 1 / currentZoom));
-                    point.style("stroke", "#dc2626");
+                    point.style("stroke", "#000000");
                     point.style("stroke-width", () => {
                         const scaleFactor = Math.max(0.3, 1 / currentZoom);
                         return Math.max(1, 3 * scaleFactor) + "px";
@@ -621,7 +633,7 @@ function highlightMunicipality(municipality) {
     
     // Make point larger and highlight it
     selectedPoint.attr("r", (getPointSize(municipality.population) + 4) * Math.max(0.3, 1 / currentZoom));
-    selectedPoint.style("stroke", "#dc2626");
+    selectedPoint.style("stroke", "#000000");
     selectedPoint.style("stroke-width", () => {
         const scaleFactor = Math.max(0.3, 1 / currentZoom);
         return Math.max(1, 3 * scaleFactor) + "px";
@@ -732,7 +744,7 @@ function showMunicipalityLabel(municipality) {
         .attr("x", projection([municipality.lon, municipality.lat])[0])
         .attr("y", projection([municipality.lon, municipality.lat])[1] - actualSize - 20) // Position above the line
         .style("font-size", Math.max(12, 16 * scaleFactor) + "px") // Scale font size with zoom
-        .style("fill", "#1f2937")
+        .style("fill", "#000000")
         .style("font-family", "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif")
         .style("pointer-events", "none")
         .style("text-anchor", "middle")
@@ -810,7 +822,7 @@ function highlightRegion(regionName) {
     regionMunicipalities.forEach(municipality => {
         const point = points.filter(p => p.name === municipality.name);
         if (point.size() > 0) {
-            point.style("stroke", "#dc2626");
+            point.style("stroke", "#000000");
             point.style("stroke-width", () => {
                 const scaleFactor = Math.max(0.3, 1 / currentZoom);
                 return Math.max(1, 3 * scaleFactor) + "px";
@@ -955,33 +967,46 @@ window.addEventListener('resize', function() {
         const newHeight = mapContainer.clientHeight;
         const newIsMobile = window.innerWidth <= 768;
         
+        // Store current transform before making changes
+        const currentTransform = d3.zoomTransform(svg.node());
+        
+        // Update SVG dimensions
         svg.attr("width", newWidth)
            .attr("height", newHeight);
         
         // Update zoom behavior translate extent with new dimensions
         zoomBehavior.translateExtent([[-newWidth * 0.5, -newHeight * 0.5], [newWidth * 1.5, newHeight * 1.5]]);
         
+        // Calculate the center offset change
+        const oldCenterX = width / 2;
+        const oldCenterY = height / 2;
+        const newCenterX = newWidth / 2;
+        const newCenterY = newHeight / 2;
+        const centerOffsetX = newCenterX - oldCenterX;
+        const centerOffsetY = newCenterY - oldCenterY;
+        
         // Adjust scale based on screen size
         const newScale = newIsMobile ? 1200 : 2000;
+        const oldScale = projection.scale();
+        const scaleRatio = newScale / oldScale;
         
         // Update projection with new scale and translation
         projection.scale(newScale)
-                  .translate([newWidth / 2, newHeight / 2]);
+                  .translate([newCenterX, newCenterY]);
         
-        // Reset zoom transform to match new scale
-        const currentTransform = d3.zoomTransform(svg.node());
-        const originalScale = isMobile ? 1200 : 2000;
-        const scaleRatio = newScale / originalScale;
-        svg.call(zoomBehavior.transform, 
-                d3.zoomIdentity.translate(currentTransform.x * scaleRatio, currentTransform.y * scaleRatio).scale(currentTransform.k));
+        // Preserve the current zoom state by adjusting the transform
+        // Account for both the scale change and center offset
+        const newTransform = d3.zoomIdentity
+            .translate(
+                currentTransform.x * scaleRatio + centerOffsetX,
+                currentTransform.y * scaleRatio + centerOffsetY
+            )
+            .scale(currentTransform.k);
         
-        // Redraw map elements
-        if (points) {
-            points.attr("cx", d => projection([d.lon, d.lat])[0])
-                  .attr("cy", d => projection([d.lon, d.lat])[1]);
-        }
+        // Apply the adjusted transform
+        svg.call(zoomBehavior.transform, newTransform);
         
-        // Update any existing labels
+        // Update any existing municipality labels and label lines
         mapGroup.selectAll(".municipality-label")
             .attr("x", d => projection([d.lon, d.lat])[0])
             .attr("y", d => {
@@ -990,6 +1015,11 @@ window.addEventListener('resize', function() {
                 const scaleFactor = Math.max(0.3, Math.min(2, 1 / currentZoom));
                 const actualSize = baseSize * scaleFactor;
                 return projection([d.lon, d.lat])[1] - actualSize - 20;
+            })
+            .style("font-size", d => {
+                const currentZoom = d3.zoomTransform(svg.node()).k;
+                const scaleFactor = Math.max(0.3, Math.min(2, 1 / currentZoom));
+                return Math.max(12, 16 * scaleFactor) + "px";
             });
         
         // Update label lines
@@ -1003,7 +1033,18 @@ window.addEventListener('resize', function() {
                 const scaleFactor = Math.max(0.3, Math.min(2, 1 / currentZoom));
                 const actualSize = baseSize * scaleFactor;
                 return projection([d.lon, d.lat])[1] - actualSize - 15;
+            })
+            .style("stroke-width", d => {
+                const currentZoom = d3.zoomTransform(svg.node()).k;
+                const scaleFactor = Math.max(0.3, Math.min(2, 1 / currentZoom));
+                return Math.max(1.5, 2.5 * scaleFactor) + "px";
             });
+        
+        // Update global width/height variables for future calculations
+        width = newWidth;
+        height = newHeight;
+        window.width = newWidth;
+        window.height = newHeight;
     }
 });
 
