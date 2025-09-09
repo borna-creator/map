@@ -66,8 +66,9 @@
                 </div>
             </div>
             
-            <!-- Stats Section Below Map -->
+            <!-- Combined Stats Section Below Map -->
             <div class="below-map-stats">
+                <!-- General Stats -->
                 <div class="stat-card">
                     <div class="stat-icon"><i class="fas fa-city"></i></div>
                     <div class="stat-content">
@@ -80,6 +81,32 @@
                     <div class="stat-content">
                         <span class="stat-number" id="total-population">0</span>
                         <span class="stat-label">إجمالي السكان</span>
+                    </div>
+                </div>
+                
+                <!-- Regional Stats -->
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-number">62</span>
+                        <span class="stat-label">المنطقة الغربية</span>
+                        <span class="stat-sublabel">4,668,121 نسمة</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-number">32</span>
+                        <span class="stat-label">المنطقة الشرقية</span>
+                        <span class="stat-sublabel">2,934,561 نسمة</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-number">6</span>
+                        <span class="stat-label">المنطقة الجنوبية</span>
+                        <span class="stat-sublabel">840,871 نسمة</span>
                     </div>
                 </div>
             </div>
@@ -95,9 +122,8 @@
             </div>
             <div class="sidebar-content">
             <div class="search-section">
-                <h3><i class="fas fa-search"></i> البحث في البلديات</h3>
                 <div class="search-container">
-                    <input type="text" id="search-input" placeholder="البحث بالأسماء العربية..." />
+                    <input type="text" id="search-input" placeholder="البحث" />
                     <button id="search-button"><i class="fas fa-search"></i></button>
                 </div>
                 <div id="search-results" class="search-results"></div>

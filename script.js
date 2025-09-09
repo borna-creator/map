@@ -4,15 +4,15 @@ let municipalities = [];
 function determineRegion(lat, lon) {
     // Western Region: roughly west of 18°E longitude
     if (lon < 18) {
-        return "Western Region";
+        return "المنطقة الغربية";
     }
     // Eastern Region: roughly east of 18°E longitude and north of 25°N latitude
     else if (lon >= 18 && lat > 25) {
-        return "Eastern Region";
+        return "المنطقة الشرقية";
     }
     // Southern Region: roughly south of 25°N latitude
     else {
-        return "Southern Region";
+        return "المنطقة الجنوبية";
     }
 }
 
@@ -96,9 +96,9 @@ fetch("libya_all_regions.csv")
     });
 
 let regions = {
-    "Western Region": [],
-    "Eastern Region": [],
-    "Southern Region": []
+    "المنطقة الغربية": [],
+    "المنطقة الشرقية": [],
+    "المنطقة الجنوبية": []
 };
 
 // Calculate map dimensions based on new layout
@@ -125,7 +125,10 @@ function updateStatistics() {
 
 function updateRegionStatistics() {
     const regionStats = d3.select("#region-stats");
+    const regionStatsDesktop = d3.select("#region-stats-desktop");
+    
     regionStats.html("");
+    regionStatsDesktop.html("");
     
     // Official population numbers by region
     const officialRegionPopulations = {
@@ -138,6 +141,7 @@ function updateRegionStatistics() {
         const regionMunicipalities = regions[regionName];
         const officialPopulation = officialRegionPopulations[regionName] || 0;
         
+        // Create sidebar statistics (for mobile)
         const statDiv = regionStats.append("div")
             .attr("class", "region-stat");
         
@@ -153,6 +157,26 @@ function updateRegionStatistics() {
             .text(`${regionMunicipalities.length} بلدية`);
         
         statsContainer.append("div")
+            .style("font-size", "12px")
+            .style("color", "#000000")
+            .text(`${officialPopulation.toLocaleString()} نسمة`);
+        
+        // Create desktop statistics (below map)
+        const desktopStatDiv = regionStatsDesktop.append("div")
+            .attr("class", "region-stat");
+        
+        desktopStatDiv.append("div")
+            .attr("class", "region-stat-name")
+            .text(regionName);
+        
+        const desktopStatsContainer = desktopStatDiv.append("div")
+            .style("text-align", "right");
+        
+        desktopStatsContainer.append("div")
+            .attr("class", "region-stat-count")
+            .text(`${regionMunicipalities.length} بلدية`);
+        
+        desktopStatsContainer.append("div")
             .style("font-size", "12px")
             .style("color", "#000000")
             .text(`${officialPopulation.toLocaleString()} نسمة`);
@@ -294,15 +318,8 @@ function getPointSize(population) {
 
 // Function to determine point color based on population (professional gradient)
 function getPointColor(population) {
-    // Professional grayish color scheme based on population
-    if (population > 500000) return "#000000";     // Black - Major cities
-        if (population > 300000) return "#1a1a1a";     // Very dark gray - Very large cities
-        if (population > 200000) return "#333333";     // Dark gray - Large cities
-        if (population > 100000) return "#4d4d4d";     // Medium gray - Medium cities
-        if (population > 50000) return "#666666";     // Gray - Small cities
-        if (population > 20000) return "#808080";     // Light gray - Towns
-        if (population > 10000) return "#cccccc";     // Very light gray - Small towns
-        return "#f0f0f0";                               // Very pale gray - Villages
+    // Consistent brown color for all municipality dots
+    return "#3F3223";     // Brown color for all municipalities
 }
 
 // Single color for all points - size indicates population
@@ -323,7 +340,7 @@ function updateMap(data) {
         .attr("cy", d => projection([d.lon, d.lat])[1])
         .attr("r", d => getPointSize(d.population))
         .style("fill", d => getPointColor(d.population))
-        .style("stroke", "#374151")
+        .style("stroke", "#685D4E")
         .style("stroke-width", "1.5px")
         .style("opacity", 0.85)
         .style("filter", "drop-shadow(0px 2px 4px rgba(0,0,0,0.2))")
@@ -366,7 +383,7 @@ function updateMap(data) {
                 const scaleFactor = Math.max(0.3, Math.min(2, 1 / currentZoom));
                 return baseSize * scaleFactor;
             });
-            points.style("stroke", "#374151");
+            points.style("stroke", "#685D4E");
             points.style("stroke-width", () => {
                 const scaleFactor = Math.max(0.3, Math.min(2, 1 / currentZoom));
                 return Math.max(1, 1.5 * scaleFactor) + "px";
@@ -405,7 +422,7 @@ function initializeMap(municipalitiesData) {
                 .attr("class", "district-boundary")
                 .attr("d", path)
                 .style("fill", "#E2D3C3")
-                .style("stroke", "#64748b")
+                .style("stroke", "#685D4E")
                 .style("stroke-width", "1.5px")
                 .on("mouseover", function(event, d) {
                     d3.select(this)
@@ -414,7 +431,7 @@ function initializeMap(municipalitiesData) {
                 })
                 .on("mouseout", function(event, d) {
                     d3.select(this)
-                        .style("stroke", "#64748b")
+                        .style("stroke", "#685D4E")
                         .style("stroke-width", "1.5px");
                 })
         });
@@ -502,7 +519,7 @@ function initializeRegionsList() {
                         const scaleFactor = Math.max(0.3, 1 / currentZoom);
                         return baseSize * scaleFactor;
                     });
-                    points.style("stroke", "#374151");
+                    points.style("stroke", "#685D4E");
                     points.style("stroke-width", () => {
                         const scaleFactor = Math.max(0.3, 1 / currentZoom);
                         return Math.max(1, 1.5 * scaleFactor) + "px";
@@ -617,7 +634,7 @@ function highlightMunicipality(municipality) {
         const scaleFactor = Math.max(0.3, 1 / currentZoom);
         return baseSize * scaleFactor;
     });
-    points.style("stroke", "#374151");
+    points.style("stroke", "#685D4E");
     points.style("stroke-width", () => {
         const scaleFactor = Math.max(0.3, 1 / currentZoom);
         return Math.max(1, 1.5 * scaleFactor) + "px";
@@ -732,7 +749,7 @@ function showMunicipalityLabel(municipality) {
         .attr("y1", projection([municipality.lon, municipality.lat])[1]) // Start from center of dot
         .attr("x2", projection([municipality.lon, municipality.lat])[0])
         .attr("y2", projection([municipality.lon, municipality.lat])[1] - actualSize - 15) // End above the dot
-        .style("stroke", "#374151")
+        .style("stroke", "#685D4E")
         .style("stroke-width", Math.max(1.5, 2.5 * scaleFactor) + "px")
         .style("opacity", 0.9)
         .style("stroke-linecap", "round");
@@ -771,7 +788,7 @@ function unhighlightRegion() {
         const scaleFactor = Math.max(0.3, 1 / currentZoom);
         return baseSize * scaleFactor;
     });
-    points.style("stroke", "#374151");
+    points.style("stroke", "#685D4E");
     points.style("stroke-width", () => {
         const scaleFactor = Math.max(0.3, 1 / currentZoom);
         return Math.max(1, 1.5 * scaleFactor) + "px";
@@ -804,7 +821,7 @@ function highlightRegion(regionName) {
         const scaleFactor = Math.max(0.3, 1 / currentZoom);
         return baseSize * scaleFactor;
     });
-    points.style("stroke", "#374151");
+    points.style("stroke", "#685D4E");
     points.style("stroke-width", () => {
         const scaleFactor = Math.max(0.3, 1 / currentZoom);
         return Math.max(1, 1.5 * scaleFactor) + "px";
